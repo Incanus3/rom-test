@@ -2,34 +2,33 @@ $LOAD_PATH.unshift(File.join(__dir__, 'lib'))
 
 require 'rom'
 require 'rom/sql'
+require 'persistence/migrations'
 
-require 'relations'
+class Repo
+  def initialize(rom_container)
+    @container = rom_container
+  end
+
+  def [](relation_name)
+    @container.relations[relation_name]
+  end
+
+  def method_missing(relation_name)
+    @container.relations[relation_name]
+  end
+end
 
 config = ROM::Configuration.new(:sql, 'sqlite::memory') do |config|
-  config.register_relation(Users, Tasks)
+  config.auto_registration(File.join(__dir__, 'lib/persistence'))
 end
 
-container  = ROM.container(config)
-default_db = container.gateways[:default]
+container = ROM.container(config)
+repo      = Repo.new(container)
 
-default_db.create_table(:users) do
-  primary_key :id
+Persistence::Migrations.apply(container.gateways[:default])
 
-  column :name,     String
-  column :age,      Integer
-  column :birthday, String
-end
-
-default_db.create_table(:tasks) do
-  primary_key :id
-
-  foreign_key :user_id, :users
-
-  column :title, String
-end
-
-users = container.relations[:users]
-tasks = container.relations[:tasks]
+# users = container.relations[:users]
+# tasks = container.relations[:tasks]
 
 user_tuples = [
   { id: 1, name: "Jane", age: 20, birthday: '2000-01-01' },
@@ -42,19 +41,19 @@ task_tuples = [
 
 # user_tuples.each { |tuple| users.insert(tuple) }
 # task_tuples.each { |tuple| tasks.insert(tuple) }
-users.command(:create, result: :many).call(user_tuples)
-tasks.command(:create, result: :many).call(task_tuples)
+repo.users.command(:create, result: :many).call(user_tuples)
+repo.tasks.command(:create, result: :many).call(task_tuples)
 
 puts "all users:"
-pp users.to_a
+pp repo.users.to_a
 puts "all tasks:"
-pp tasks.to_a
+pp repo.tasks.to_a
 puts "john's tasks:"
-pp tasks.for_users(users.associations[:tasks], users.where(name: 'John')).to_a
+pp repo.tasks.for_users(repo.users.associations[:tasks], repo.users.where(name: 'John')).to_a
 puts "john with his tasks:"
-pp users.where(name: "John").combine(:tasks).one! # should be the same
+pp repo.users.where(name: "John").combine(:tasks).one! # should be the same
 puts "task 2 with its user:"
-task_with_user = tasks.by_id(2).combine(:users).one!
+task_with_user = repo.tasks.by_id(2).combine(:users).one!
 pp task_with_user
 pp task_with_user.user
 
