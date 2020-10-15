@@ -1,12 +1,13 @@
-require 'entities'
+require 'dry/monads'
+require 'dry/types'
 require 'persistence/utils'
 
 Dry::Types.load_extensions(:maybe)
 
 module Persistence
   module Relations
-    class Users < ROM::Relation[:sql]
-      UUID = ROM::SQL::Types::String.default { SecureRandom.uuid }
+    class Users < BaseRelation
+      UUID = Types::String.default { SecureRandom.uuid }
 
       schema(:users) do
         # attribute :id,   UUID
@@ -23,13 +24,12 @@ module Persistence
         end
       end
 
-      struct_namespace Entities
-      auto_struct true
-
-      include CommonViews
-
       def listing
         select(:id, :name, :email).order(:name)
+      end
+
+      def by_name(name)
+        where(name: name)
       end
     end
   end

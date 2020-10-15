@@ -1,9 +1,8 @@
-require 'entities'
 require 'persistence/utils'
 
 module Persistence
   module Relations
-    class Tasks < ROM::Relation[:sql]
+    class Tasks < BaseRelation
       schema(:tasks) do
         attribute :id, Types::Integer
         attribute :user_id, Types::ForeignKey(:users)
@@ -17,11 +16,6 @@ module Persistence
           belongs_to :user
         end
       end
-
-      struct_namespace Entities
-      auto_struct true
-
-      include CommonViews
 
       def for_users(_assoc, users)
         where(user_id: users.map { |u| u[:id] })
