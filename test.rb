@@ -1,11 +1,11 @@
-$LOAD_PATH.unshift(File.join(__dir__, 'lib'))
+$LOAD_PATH.unshift(File.join(__dir__))
 
-require 'persistence/container'
-require 'persistence/migrations'
+require 'app/persistence/container'
+require 'app/persistence/migrations'
 
-db = Persistence::Container.new
+db = App::Persistence::Container.new
 
-Persistence::Migrations.apply(db.gateways[:default])
+App::Persistence::Migrations.apply(db.gateways[:default])
 
 user_tuples = [
   { id: 1, name: "Jane", age: 20, birthday: '2000-01-01' },
@@ -28,6 +28,6 @@ pp db.users.find(2)
 puts "john with his tasks:"
 pp db.users.with_tasks.by_name('John').one!
 puts "task 2 with its user:"
-task_with_user = db.users.tasks.by_id(2).combine(:users).one!
+task_with_user = db.tasks.by_id(2).combine(:users).one!
 pp task_with_user
 pp task_with_user.user

@@ -1,30 +1,28 @@
-require_relative 'config'
-require_relative 'repositories'
+module Utils
+  module Persistence
+    class Container
+      DEFAULT_REPO_OPTIONS = {}
 
-module Persistence
-  class Container
-    def self.new(config = Persistence.configure)
-      super(ROM.container(config))
+      def self.new(config)
+        super(ROM.container(config))
+      end
+
+      def initialize(rom_container)
+        @repositories  = {}
+        @rom_container = rom_container
+      end
+
+      def gateways
+        self.rom_container.gateways
+      end
+
+      private
+
+      attr_reader :rom_container
+
+      def create_repo(cls)
+        @repositories[cls.name] ||= cls.new(self.rom_container, **self.class::DEFAULT_REPO_OPTIONS)
+      end
     end
-
-    def initialize(rom_container)
-      @rom_container = rom_container
-    end
-
-    def gateways
-      self.rom_container.gateways
-    end
-
-    def users
-      @_users_repo ||= Persistence::Repositories::Users.new(self.rom_container)
-    end
-
-    def tasks
-      @_tasks_repo ||= Persistence::Repositories::Tasks.new(self.rom_container)
-    end
-
-    private
-
-    attr_reader :rom_container
   end
 end
