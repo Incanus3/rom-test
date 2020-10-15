@@ -1,9 +1,17 @@
 module Utils
   module Persistence
     class Container
-      DEFAULT_REPO_OPTIONS = {}
+      DEFAULT_CONFIG_OPTIONS = {}
+      DEFAULT_REPO_OPTIONS   = {}
 
-      def self.new(config)
+      def self.new(config_or_options)
+        if config_or_options.is_a?(ROM::Configuration)
+          config = config_or_options
+        else
+          options = self::DEFAULT_CONFIG_OPTIONS.merge(config_or_options)
+          config  = Utils::Persistence.configure(**options)
+        end
+
         super(ROM.container(config))
       end
 
@@ -20,7 +28,13 @@ module Utils
 
       attr_reader :rom_container
 
-      def create_repo(cls)
+      def self.register_repo(cls, as: nil)
+        as ||= Utils::String.underscore(cls.name.split('::').last)
+
+        define_method(as) { register_repo(cls) }
+      end
+
+      def register_repo(cls)
         @repositories[cls.name] ||= cls.new(self.rom_container, **self.class::DEFAULT_REPO_OPTIONS)
       end
     end

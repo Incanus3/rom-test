@@ -9,6 +9,10 @@ module Utils
         root.to_a
       end
 
+      def delete_all
+        root.delete()
+      end
+
       def find(pk)
         root.by_pk(pk).one!
       end

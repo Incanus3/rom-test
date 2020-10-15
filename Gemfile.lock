@@ -2,6 +2,8 @@ GEM
   remote: https://rubygems.org/
   specs:
     concurrent-ruby (1.1.7)
+    dry-auto_inject (0.7.0)
+      dry-container (>= 0.3.4)
     dry-configurable (0.11.6)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -27,6 +29,15 @@ GEM
       dry-equalizer (~> 0.3)
       dry-types (~> 1.3)
       ice_nine (~> 0.11)
+    dry-system (0.18.1)
+      concurrent-ruby (~> 1.0)
+      dry-auto_inject (>= 0.4.0)
+      dry-configurable (~> 0.11, >= 0.11.1)
+      dry-container (~> 0.7, >= 0.7.2)
+      dry-core (~> 0.3, >= 0.3.1)
+      dry-equalizer (~> 0.2)
+      dry-inflector (~> 0.1, >= 0.1.2)
+      dry-struct (~> 1.0)
     dry-types (1.4.0)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
@@ -35,6 +46,7 @@ GEM
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
     ice_nine (0.11.2)
+    pg (1.2.3)
     rake (13.0.1)
     rom (5.2.4)
       rom-changeset (~> 5.2, >= 5.2.3)
@@ -65,6 +77,9 @@ GEM
       rom-core (~> 5.2, >= 5.2.1)
       sequel (>= 4.49)
     sequel (5.37.0)
+    sequel_pg (1.14.0)
+      pg (>= 0.18.0, != 1.2.0)
+      sequel (>= 4.38.0)
     sqlite3 (1.4.2)
     transproc (1.1.1)
 
@@ -72,11 +87,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dry-inflector
   dry-monads
+  dry-system
   dry-types
+  pg
   rake
   rom
   rom-sql
+  sequel_pg
   sqlite3
 
 BUNDLED WITH

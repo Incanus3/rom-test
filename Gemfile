@@ -1,7 +1,11 @@
 source 'https://rubygems.org'
 
+gem 'dry-inflector'
 gem 'dry-monads'
+gem 'dry-system'
 gem 'dry-types'
+gem 'pg'
+gem 'sequel_pg'
 gem 'rake'
 gem 'rom'
 gem 'rom-sql'

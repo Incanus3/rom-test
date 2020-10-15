@@ -1,11 +1,12 @@
-$LOAD_PATH.unshift(File.join(__dir__))
+APP_ROOT = File.expand_path(__dir__)
 
-require 'app/persistence/container'
-require 'app/persistence/migrations'
+$LOAD_PATH.unshift(APP_ROOT)
 
-db = App::Persistence::Container.new
+require 'app/dependencies'
 
-App::Persistence::Migrations.apply(db.gateways[:default])
+App::Dependencies.start(:persistence)
+
+db = App::Dependencies[:db]
 
 user_tuples = [
   { id: 1, name: "Jane", age: 20, birthday: '2000-01-01' },
@@ -16,6 +17,8 @@ task_tuples = [
   { id: 2, user_id: 2, title: "John's task" }
 ]
 
+db.tasks.delete_all()
+db.users.delete_all()
 db.users.create_many(user_tuples)
 db.tasks.create_many(task_tuples)
 
