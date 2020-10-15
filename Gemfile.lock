@@ -35,6 +35,7 @@ GEM
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
     ice_nine (0.11.2)
+    rake (13.0.1)
     rom (5.2.4)
       rom-changeset (~> 5.2, >= 5.2.3)
       rom-core (~> 5.2, >= 5.2.3)
@@ -72,6 +73,8 @@ PLATFORMS
 
 DEPENDENCIES
   dry-monads
+  dry-types
+  rake
   rom
   rom-sql
   sqlite3
