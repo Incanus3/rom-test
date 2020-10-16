@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(APP_ROOT)
 
 require 'app/dependencies'
 require 'app/services/registration'
+require 'app/services/export'
 
 App::Dependencies.start(:persistence)
 
@@ -38,7 +39,7 @@ db.clients.delete_all()
 db.clients.create(marie_attrs)
 
 p App::Services::Registration.perform(marie_attrs.merge({
-  last_name:         "Currie",
+  last_name:         "Currie", # will get updated
   requestor_type:    "samopl",
   exam_type:         "pl",
   exam_date:         '2020-10-20',
@@ -67,3 +68,8 @@ puts "marie's registration 2 with client:"
 registration_with_client = db.registrations.with_clients.by_date('2020-10-20').one!
 pp registration_with_client
 pp registration_with_client.client
+
+puts sep
+result = App::Services::Export.perform
+p result.success?
+result.bind { |csv| puts csv }
