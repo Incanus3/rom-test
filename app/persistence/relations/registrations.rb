@@ -20,6 +20,10 @@ module App
             belongs_to :client
           end
         end
+
+        def by_date(date)
+          where(exam_date: date)
+        end
       end
     end
   end

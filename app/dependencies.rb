@@ -3,6 +3,12 @@ require 'lib/env_vars'
 
 module App
   class Dependencies < Dry::System::Container
+    DEFAULT_CONFIG_OPTIONS = {
+      allow_registration_for_weekends:       false,
+      allow_registration_for_today_after_10: false,
+      daily_registration_limit:              5,
+    }.freeze
+
     DEFAULT_DB_OPTIONS = {
       adapter:       ENV.fetch('DB_BACKEND',  'postgres'),
       host:          ENV.fetch('DB_HOST',     'localhost'),
@@ -30,6 +36,7 @@ module App
 
     register :env,    env
     register :logger, logger
+    register :config, DEFAULT_CONFIG_OPTIONS
 
     boot(:persistence) do |container|
       init do
