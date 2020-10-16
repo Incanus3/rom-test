@@ -3,8 +3,8 @@ require 'lib/persistence/container'
 
 require 'app/entities'
 
-require_relative 'repositories/users'
-require_relative 'repositories/tasks'
+require_relative 'repositories/clients'
+require_relative 'repositories/registrations'
 
 module App
   module Persistence
@@ -24,8 +24,8 @@ module App
         struct_namespace: App::Entities
       }.freeze
 
-      register_repo(Persistence::Repositories::Users)
-      register_repo(Persistence::Repositories::Tasks)
+      register_repo(Persistence::Repositories::Clients)
+      register_repo(Persistence::Repositories::Registrations)
     end
   end
 end
